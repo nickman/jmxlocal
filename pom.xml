@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.heliosapm.jmxlocal</groupId>
+	<artifactId>jmxlocal</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>JMXLocal</name>
+	<properties>
+  	<!-- Misc -->
+ 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ 		<compiler-source.version>1.6</compiler-source.version>
+ 		<compiler-target.version>1.6</compiler-target.version>
+ 		<!-- Dependencies -->
+ 		<junit.version>4.12</junit.version>		
+		<!-- Plugin Versions -->
+		<jar-plugin.version>2.3</jar-plugin.version>
+		<source-plugin.version>2.2</source-plugin.version>
+		<javadoc-plugin.version>2.9</javadoc-plugin.version>
+		<jar-plugin.version>2.4</jar-plugin.version>
+		<eclipse-plugin.version>2.9</eclipse-plugin.version>
+		<surefire.version>2.16</surefire.version>
+	</properties>
+	
+	
+	<dependencies>
+	
+
+		<!--   TEST   -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+			
+	</dependencies>
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<plugins>
+
+		    <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-eclipse-plugin</artifactId>
+			<version>${eclipse-plugin.version}</version>
+			<configuration>
+			    <downloadJavadocs>true</downloadJavadocs>
+			    <downloadSources>true</downloadSources>
+			</configuration>
+		    </plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>${compiler-source.version}</source>
+					<target>${compiler-target.version}</target>
+				</configuration>
+			</plugin>
+       	<plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-jar-plugin</artifactId>
+		  <version>${jar-plugin.version}</version>		
+		  <configuration>
+		      <archive>
+			  <manifest>
+			      <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+			      <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+			      <addClasspath>true</addClasspath>
+			  </manifest>
+			  <manifestEntries>
+			  		<!--
+				    		<Main-Class>org.helios.apmrouter.Agent</Main-Class> 
+				    		<Premain-Class>org.helios.apmrouter.Agent</Premain-Class>
+			            	<Agent-Class>org.helios.apmrouter.Agent</Agent-Class>
+			            	<Can-Redefine-Classes>true</Can-Redefine-Classes>
+			            	<Can-Retransform-Classes>true</Can-Retransform-Classes>
+			            	<Can-Set-Native-Method-Prefix>true</Can-Set-Native-Method-Prefix>				    
+			        -->
+			  </manifestEntries>
+		      </archive>
+		  </configuration>
+            	</plugin>
+            	
+            				
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,2 @@
+com.heliosapm.utils.jmx.protocol.local.ClientProvider
+com.heliosapm.utils.jmx.protocol.attach.ClientProvider
