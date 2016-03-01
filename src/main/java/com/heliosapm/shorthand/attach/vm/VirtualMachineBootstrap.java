@@ -66,7 +66,8 @@ public class VirtualMachineBootstrap extends BaseWrappedClass {
 	public static final String JAVA_HOME = System.getProperty("java.home");
 	/** Alternate locations to look for tools.jar */
 	public static final String[] ALT_LOCS = {
-		File.separator + ".." + File.separator + "lib" + File.separator
+		File.separator + ".." + File.separator + "lib" + File.separator,
+		new File(VirtualMachineBootstrap.class.getProtectionDomain().getCodeSource().getLocation().getFile()).getParentFile().getAbsolutePath() + File.separator
 	};
 	
 	/** Flag indicating if the attach classes have been found */
