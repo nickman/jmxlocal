@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -165,7 +166,7 @@ public class AttachProvider extends BaseWrappedClass {
 		VirtualMachineBootstrap.findAttachAPI();
 		try {
 			pushCl();			
-			log.info("Loading Attach Provider with [" + Thread.currentThread().getContextClassLoader() + "]");
+			log.log(Level.FINER, "Loading Attach Provider with [" + Thread.currentThread().getContextClassLoader() + "]");
 			Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(VirtualMachineBootstrap.ATTACH_PROVIDER_CLASS);
 			Method m = clazz.getDeclaredMethod("providers");
 			m.setAccessible(true);

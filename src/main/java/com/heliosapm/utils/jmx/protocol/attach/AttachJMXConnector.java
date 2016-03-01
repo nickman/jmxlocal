@@ -118,20 +118,20 @@ public class AttachJMXConnector implements JMXConnector {
 		List<VirtualMachineDescriptor> machines = VirtualMachine.list();
 		for(VirtualMachineDescriptor vmd: machines) {
 			if(PID.equals(vmd.id())) {
-				System.err.println("Skipped PID:" + vmd.id() + " with display [" + vmd.displayName() + "]");
+//				System.err.println("Skipped PID:" + vmd.id() + " with display [" + vmd.displayName() + "]");
 				continue;  // this avoids connecting to self
 			}
 			String displayName = vmd.displayName();
 			if(jvmDisplayName!=null) {
 				if(jvmDisplayName.equals(displayName)) {
-					System.err.println("Exact Match: Attaching to JVM:" + vmd.id() + " with display [" + vmd.displayName() + "]");
+//					System.err.println("Exact Match: Attaching to JVM:" + vmd.id() + " with display [" + vmd.displayName() + "]");
 					vm = VirtualMachine.attach(vmd.id());
 					return;
 				}
 			} else {
 				Matcher m = displayNamePattern.matcher(displayName);
 				if(m.matches()) {
-					System.err.println("Pattern Match: Attaching to JVM:" + vmd.id() + " with display [" + vmd.displayName() + "]");
+//					System.err.println("Pattern Match: Attaching to JVM:" + vmd.id() + " with display [" + vmd.displayName() + "]");
 					vm = VirtualMachine.attach(vmd.id());
 					return;
 				}

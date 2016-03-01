@@ -34,6 +34,8 @@
 			<scope>test</scope>
 		</dependency>
 		
+		
+		
 			
 	</dependencies>
 	<build>
@@ -71,6 +73,7 @@
 			      <addClasspath>true</addClasspath>
 			  </manifest>
 			  <manifestEntries>
+			  	<Main-Class>com.heliosapm.utils.jmx.Command</Main-Class>
 			  		<!--
 				    		<Main-Class>org.helios.apmrouter.Agent</Main-Class> 
 				    		<Premain-Class>org.helios.apmrouter.Agent</Premain-Class>
