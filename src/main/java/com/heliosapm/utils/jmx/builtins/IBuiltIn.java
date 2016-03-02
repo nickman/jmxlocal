@@ -31,6 +31,7 @@ public interface IBuiltIn {
 	 * @param conn The MBeanServerConnection to issue the command against
 	 * @param args The arguments to this built in
 	 * @return the response from the built in
+	 * @throws Exception thrown on any error
 	 */
-	public Object execute(final MBeanServerConnection conn, final String...args);
+	public Object execute(final MBeanServerConnection conn, final String...args) throws Exception;
 }

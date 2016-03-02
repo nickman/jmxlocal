@@ -15,6 +15,8 @@
  */
 package com.heliosapm.utils.jmx.builtins;
 
+import javax.management.MBeanServerConnection;
+
 /**
  * <p>Title: BuiltIn</p>
  * <p>Description: Enumerates the built in JMX commands</p> 
@@ -23,7 +25,7 @@ package com.heliosapm.utils.jmx.builtins;
  * <p><code>com.heliosapm.utils.jmx.builtins.BuiltIn</code></p>
  */
 
-public enum BuiltIn {
+public enum BuiltIn implements IBuiltIn {
 	HDUMP("Executes a heap dump. Args: <file name> [<include live refs(true/false)>]", new HeapDumpBuiltIn()),
 	JAVA("Compiles the passed code and executes, passing in the MBeanServerConnection. Args: <code>", new DynamicBuiltIn());
 	
@@ -34,4 +36,12 @@ public enum BuiltIn {
 	
 	public final String help;
 	public final IBuiltIn builtIn;
+	/**
+	 * {@inheritDoc}
+	 * @see com.heliosapm.utils.jmx.builtins.IBuiltIn#execute(javax.management.MBeanServerConnection, java.lang.String[])
+	 */
+	@Override
+	public Object execute(final MBeanServerConnection conn, final String... args) throws Exception {
+		return builtIn.execute(conn, args);
+	}
 }

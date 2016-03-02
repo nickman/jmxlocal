@@ -18,12 +18,22 @@ under the License.
  */
 package com.heliosapm.utils.jmx;
 
+import java.io.Closeable;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.management.MBeanServerConnection;
+import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
-import org.kohsuke.args4j.spi.EnumOptionHandler;
 import org.kohsuke.args4j.spi.StopOptionHandler;
+
+import com.heliosapm.utils.jmx.arghandler.JMXServiceURLOptionHandler;
+import com.heliosapm.utils.jmx.builtins.BuiltIn;
 
 /**
  * <p>Title: CommandLine</p>
@@ -33,36 +43,96 @@ import org.kohsuke.args4j.spi.StopOptionHandler;
  * <p><code>com.heliosapm.utils.jmx.CommandLine</code></p>
  */
 
-public class CommandLine {
+public class CommandLine implements Closeable {
 	/** The JMX URL */
-	@Option(name="-jmxurl", required=true, usage="The JMXServiceURL to connect with. e.g. -jmxurl service:jmx:attach///<PID>")
-	public String jmxUrl = null;
+	@Option(name="-jmxurl", handler=JMXServiceURLOptionHandler.class, required=true, usage="The JMXServiceURL to connect with. e.g. -jmxurl service:jmx:attach:///<PID>")
+	private JMXServiceURL jmxUrl = null;
+	/** The print stack trace option */
+	@Option(name="-psx", required=false, usage="If specified, any error will print a stack trace")
+	private boolean psx = false;
+	
 	/** The optional user name */
 	@Option(name="-u", depends="-p", usage="The optional JMX user name. e.g. -u <user>")
-	public String user = null;
+	private String user = null;
 	/** The optional password */
 	@Option(name="-p", depends="-u", usage="The optional JMX password. e.g. -p <password>")
-	public String password = null;
-	
+	private String password = null;
 	/** The command name and arguments */
-	//@Option(name="-c", metaVar="<command name> <args>", handler=RestOfArgumentsHandler.class, usage="The command name and arguments. e.g. -c hdump /tmp/heap.dump true")
 	@Argument
-	@Option(name="--", metaVar="<command args>", handler=StopOptionHandler.class, usage="The command name and arguments. e.g. /tmp/heap.dump true")
-	public String[] commands = null;
-
+	@Option(name="", hidden=true, metaVar="<command args>", handler=StopOptionHandler.class, usage="The command name and arguments. e.g. /tmp/heap.dump true")
+	private String[] commands = null;
 	/** The command name*/
-	@Option(name="-c", handler=EnumOptionHandler.class,  usage="The command name and arguments. e.g. -c hdump")
-	public String command = null;
+	@Option(name="-c", usage="The command name and arguments. e.g. -c hdump /tmp/heap.dump true")
+	private BuiltIn builtIn = null;
 
-	
-	
+	private MBeanServerConnection conn = null;
+	private JMXConnector jmxConnector = null;
 	
 	/**
 	 * Creates a new CommandLine
 	 */
 	public CommandLine() {
-		// TODO Auto-generated constructor stub
+
 	}
+	
+	/**
+	 * Executes the configured command
+	 * @return the result of the command
+	 */
+	public Object execute() throws Exception {
+		if(jmxUrl==null) throw new IllegalStateException("The command line has not been parsed");
+		connect();
+		return builtIn.execute(conn, commands);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see java.io.Closeable#close()
+	 */
+	@Override
+	public void close() {
+		if(jmxConnector!=null) try { jmxConnector.close(); } catch (Exception x) {/* No Op */}
+	}
+	
+	private void connect() {
+		try {
+			final Map<String, Object> env = new HashMap<String, Object>();
+			if(user!=null) {
+				env.put(JMXConnector.CREDENTIALS, new String[]{user, password});
+			}
+			jmxConnector = JMXConnectorFactory.connect(jmxUrl, env);			
+			conn = jmxConnector.getMBeanServerConnection();
+		} catch (Exception ex) {
+			if(jmxConnector!=null) try { jmxConnector.close(); } catch (Exception x) {/* No Op */}
+			throw new RuntimeException("Failed to connect to [" + jmxUrl + "]", ex);
+		}
+	}
+	
+	/**
+	 * Indicates if a stack trace should be printed on any exception
+	 * @return true if a stack trace should be printed on any exception, false otherwise
+	 */
+	public boolean isPrintStackTrace() {
+		return psx;
+	}
+	
+	/**
+	 * Returns the JMXServiceURL
+	 * @return the jmxUrl
+	 */
+	public JMXServiceURL getJmxUrl() {
+		return jmxUrl;
+	}
+
+	/**
+	 * Returns command arguments 
+	 * @return the command arguments
+	 */
+	public String[] getCommandArgs() {
+		return commands.clone();
+	}
+
+
 
 
 	/**
@@ -74,12 +144,15 @@ public class CommandLine {
 		StringBuilder builder = new StringBuilder();
 		builder.append("CommandLine [jmxUrl=");
 		builder.append(jmxUrl);
+		builder.append(", psx=");
+		builder.append(psx);
+		
 		builder.append(", user=");
 		builder.append(user);
 		builder.append(", password=");
 		builder.append(password);
 		builder.append(", command=");
-		builder.append(command);
+		builder.append(builtIn);
 		builder.append(", args=");
 		builder.append(Arrays.toString(commands));
 		

@@ -15,6 +15,10 @@
  */
 package com.heliosapm.utils.jmx.builtins;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
@@ -31,9 +35,16 @@ public class HeapDumpBuiltIn extends AbstractBuiltIn {
 	/** The HotSpot diagnostic MBean */
 	public static final ObjectName HOTSPOT_MBEAN = on("com.sun.management:type=HotSpotDiagnostic");
 	/** The heap dump op */
-	public static final String OP = "heapDump";
+	public static final String OP = "dumpHeap";
 	/** The heap dump sig */
-	private final String[] SIG = {String.class.getName(), boolean.class.getName()};
+	private static final String[] SIG = {String.class.getName(), boolean.class.getName()};
+	/** The tmp directory for default heap dump files */
+	private static final File TMP_DIR = new File(System.getProperty("java.io.tmpdir"));
+	/** The timestamp format for default heap dump file names */
+	private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+	/** The file name template for default heap dump file names */
+	private static final String FILE_NAME = "%s-heap-%s.dmp";
+	
 	
 
 	/**
@@ -42,12 +53,20 @@ public class HeapDumpBuiltIn extends AbstractBuiltIn {
 	 */
 	@Override
 	protected Object doExecute(final MBeanServerConnection conn, final String... args) throws Exception {
-		if(args.length<2) {
-			conn.invoke(HOTSPOT_MBEAN, OP, new Object[]{args[0], true}, SIG);
+		String fileName = null;
+		if(args==null || args.length==0) {
+			final String PID = pid(conn);
+			File f = new File(TMP_DIR, String.format(FILE_NAME, PID, SDF.format(new Date())));
+			fileName = f.getAbsolutePath();
+			conn.invoke(HOTSPOT_MBEAN, OP, new Object[]{fileName, true}, SIG);			
+		} else if(args.length<2) {
+			fileName = args[0];
+			conn.invoke(HOTSPOT_MBEAN, OP, new Object[]{fileName, true}, SIG);
 		} else {
-			conn.invoke(HOTSPOT_MBEAN, OP, new Object[]{args[0], Boolean.parseBoolean(args[1])}, SIG);
+			fileName = args[0];
+			conn.invoke(HOTSPOT_MBEAN, OP, new Object[]{fileName, Boolean.parseBoolean(args[1])}, SIG);
 		}
-		return "success";
+		return fileName;
 	}
 
 }
