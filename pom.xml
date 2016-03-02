@@ -13,6 +13,7 @@
  		<compiler-target.version>1.6</compiler-target.version>
  		<!-- Dependencies -->
  		<junit.version>4.12</junit.version>		
+ 		<args4j.version>2.0.29</args4j.version>
 		<!-- Plugin Versions -->
 		<jar-plugin.version>2.3</jar-plugin.version>
 		<source-plugin.version>2.2</source-plugin.version>
@@ -20,6 +21,7 @@
 		<jar-plugin.version>2.4</jar-plugin.version>
 		<eclipse-plugin.version>2.9</eclipse-plugin.version>
 		<surefire.version>2.16</surefire.version>
+		<shade.version>2.1</shade.version>
 	</properties>
 	
 	
@@ -33,8 +35,12 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
-		
+  
+    <dependency>
+      <groupId>args4j</groupId>
+      <artifactId>args4j</artifactId>
+      <version>${args4j.version}</version>
+    </dependency>
 		
 			
 	</dependencies>
@@ -87,6 +93,45 @@
 		  </configuration>
             	</plugin>
             	
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-shade-plugin</artifactId>
+              <version>${shade.version}</version>
+              <executions>
+                  <execution>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                      
+                      <artifactSet>
+                        <excludes>
+		                      <exclude>META-INF/*.SF</exclude>
+		                      <exclude>META-INF/*.DSA</exclude>
+		                      <exclude>META-INF/*.RSA</exclude>                       
+                        </excludes>
+                        <includes>
+                          
+                        </includes>
+                      </artifactSet>
+                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                    <includePluginDependencies>false</includePluginDependencies>
+                    
+                  <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"></transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                          <resource>.SF</resource>
+                          <resource>.DSA</resource>
+                          <resource>.RSA</resource>
+                      </transformer>
+                      </transformers>
+                    </configuration>
+                    
+                  </execution>
+                </executions>
+            </plugin>     
             				
 		</plugins>
 	</build>

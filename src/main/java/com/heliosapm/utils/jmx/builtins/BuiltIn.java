@@ -24,5 +24,14 @@ package com.heliosapm.utils.jmx.builtins;
  */
 
 public enum BuiltIn {
-
+	HDUMP("Executes a heap dump. Args: <file name> [<include live refs(true/false)>]", new HeapDumpBuiltIn()),
+	JAVA("Compiles the passed code and executes, passing in the MBeanServerConnection. Args: <code>", new DynamicBuiltIn());
+	
+	private BuiltIn(final String help, final IBuiltIn builtIn) {
+		this.help = help;
+		this.builtIn = builtIn;
+	}
+	
+	public final String help;
+	public final IBuiltIn builtIn;
 }
