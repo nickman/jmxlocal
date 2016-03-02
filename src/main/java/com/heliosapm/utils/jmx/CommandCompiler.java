@@ -16,17 +16,15 @@
 package com.heliosapm.utils.jmx;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
@@ -52,6 +50,7 @@ public class CommandCompiler {
 		StandardJavaFileManager fileManager = null;
 		try {
 			final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			if(compiler==null) throw new Exception("No compiler available. Suggestion: Use JDK if you are using JRE.");
 			final Iterable<? extends JavaFileObject> compilationUnits  = getJavaSourceFromString(code);
 			
 			final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
@@ -73,7 +72,9 @@ public class CommandCompiler {
 			if(!success) throw new Exception("Failed to compile code:" + diagnostics.getDiagnostics() + "\n" + sw.toString());
 			
 			final DefiningClassLoader cc = new DefiningClassLoader(CommandCompiler.class.getClassLoader());
-			return cc.gitEm("MyPackage.MyCommand", jfo[0].openInputStream());		    
+			new File("MyCommand.class").deleteOnExit();
+			return cc.gitEm("MyPackage.MyCommand", jfo[0].openInputStream());
+			
 		} finally {
 			if(fileManager!=null) try { fileManager.close(); } catch (Exception x) {/* No Op */}
 		}
