@@ -27,7 +27,8 @@ import javax.management.MBeanServerConnection;
 
 public enum BuiltIn implements IBuiltIn {
 	HDUMP("Executes a heap dump. Args: <file name> [<include live refs(true/false)>]", new HeapDumpBuiltIn()),
-	JAVA("Compiles the passed code and executes, passing in the MBeanServerConnection. Args: <code>", new DynamicBuiltIn());
+	JAVA("Compiles the passed code and executes, passing in the MBeanServerConnection. Args: <code>", new DynamicBuiltIn()),
+	GC("Lists GC Stats or invokes GC on the JVM. Args: -invoke to invoke. Otherwise lists stats", new GCBuiltIn());
 	
 	private BuiltIn(final String help, final IBuiltIn builtIn) {
 		this.help = help;
@@ -43,5 +44,13 @@ public enum BuiltIn implements IBuiltIn {
 	@Override
 	public Object execute(final MBeanServerConnection conn, final String... args) throws Exception {
 		return builtIn.execute(conn, args);
+	}
+	
+	public static final String printHelp() {
+		final StringBuilder b = new StringBuilder("BuiltIns:");
+		for(BuiltIn bi: values()) {
+			b.append("\n\t").append(bi.name()).append(" : ").append(bi.help);
+		}
+		return b.toString();
 	}
 }

@@ -32,6 +32,7 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.StopOptionHandler;
 
+import com.heliosapm.utils.jmx.arghandler.AltEnumOptionHandler;
 import com.heliosapm.utils.jmx.arghandler.JMXServiceURLOptionHandler;
 import com.heliosapm.utils.jmx.builtins.BuiltIn;
 
@@ -52,17 +53,17 @@ public class CommandLine implements Closeable {
 	private boolean psx = false;
 	
 	/** The optional user name */
-	@Option(name="-u", depends="-p", usage="The optional JMX user name. e.g. -u <user>")
+	@Option(name="-u", metaVar="<jmx user name>", depends="-p", usage="The optional JMX user name. e.g. -u <user>")
 	private String user = null;
 	/** The optional password */
-	@Option(name="-p", depends="-u", usage="The optional JMX password. e.g. -p <password>")
+	@Option(name="-p", metaVar="<jmx password>", depends="-u", usage="The optional JMX password. e.g. -p <password>")
 	private String password = null;
 	/** The command name and arguments */
 	@Argument
 	@Option(name="", hidden=true, metaVar="<command args>", handler=StopOptionHandler.class, usage="The command name and arguments. e.g. /tmp/heap.dump true")
 	private String[] commands = null;
 	/** The command name*/
-	@Option(name="-c", usage="The command name and arguments. e.g. -c hdump /tmp/heap.dump true")
+	@Option(name="-c", handler=AltEnumOptionHandler.class, usage="The command name and arguments. e.g. -c hdump /tmp/heap.dump true")
 	private BuiltIn builtIn = null;
 
 	private MBeanServerConnection conn = null;

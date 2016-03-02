@@ -15,9 +15,14 @@
  */
 package com.heliosapm.utils.jmx;
 
+import java.util.Properties;
+
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.ParserProperties;
+
+import com.heliosapm.utils.jmx.arghandler.AltEnumOptionHandler;
+import com.heliosapm.utils.jmx.builtins.BuiltIn;
 
 /**
  * <p>Title: Command</p>
@@ -34,20 +39,21 @@ public class Command {
 	 * @param args Parsed via args4j. See {@link CommandLine}
 	 */
 	public static void main(String[] args) {
-		CommandLine cl = new CommandLine();
-		ParserProperties properties = ParserProperties.defaults();
-		properties.withOptionSorter(null);
-		CmdLineParser parser = new CmdLineParser(cl, properties);		
+		CommandLine cl = new CommandLine();		
+		CmdLineParser parser = new CmdLineParser(cl, configure());
+		
 		try {
-			parser.parseArgument(args);			 				
+			parser.parseArgument(args);					
 		} catch (CmdLineException ex) {
 			System.err.println(ex.getMessage());
+			
 			parser.printUsage(System.err);
+			System.err.println(BuiltIn.printHelp());
 			System.exit(1);
 		}
 		try {
 			final Object result = cl.execute();
-			System.out.println("Completed Successfully. Result:" + (result==null ? "" : result));
+			System.out.println((result==null ? "" : result));
 			System.exit(0);
 		} catch (Exception ex) {
 			System.err.println("FAILED.:" + ex);
@@ -60,6 +66,14 @@ public class Command {
 		}
 	}
 	
+	
+	private static ParserProperties configure() {
+		CmdLineParser.registerHandler(BuiltIn.class, AltEnumOptionHandler.class);
+		ParserProperties properties = ParserProperties.defaults();
+		properties.withOptionSorter(null);
+		properties.withUsageWidth(100);
+		return properties;
+	}
 	
 
 }

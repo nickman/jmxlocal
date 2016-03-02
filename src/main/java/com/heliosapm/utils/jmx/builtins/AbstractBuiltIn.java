@@ -15,7 +15,12 @@
  */
 package com.heliosapm.utils.jmx.builtins;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.Charset;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
@@ -31,6 +36,16 @@ import javax.management.ObjectName;
 public abstract class AbstractBuiltIn implements IBuiltIn {
 	/** The runtime mx bean ObjectName so we can get the pid */
 	public static final ObjectName RUNTIMEMX = on(ManagementFactory.RUNTIME_MXBEAN_NAME);
+	/** GC MXBean ObjectName filter */
+	public static final ObjectName GC_PATTERN = on(ManagementFactory.GARBAGE_COLLECTOR_MXBEAN_DOMAIN_TYPE + ",name=*");
+	/** The Memory MXBean object name */
+	public static final ObjectName MEM_MXBEAN = on("java.lang:type=Memory");
+	
+	
+	/**Empty Object arr const  */
+	public static final Object[] EMPTY_PARAMS = {};
+	/**Empty String arr const  */
+	public static final String[] EMPTY_SIG = {};
 
 
 	/**
@@ -109,7 +124,38 @@ public abstract class AbstractBuiltIn implements IBuiltIn {
 	public Object invoke(final MBeanServerConnection conn, final String objectName, final String opName, final Object[] params, final String[] signature) {
 		return invoke(conn, on(objectName), opName, params, signature);
 	}
-	
+
+	/**
+	 * Reads in a file as UTF8 text and returns the value in a string
+	 * @param fileName The file name
+	 * @return the text
+	 */
+	public static String getFileText(final String fileName) {
+		final File f = new File(fileName);
+		if(!f.exists()) throw new IllegalArgumentException("File [" + fileName + "] does not exist");
+		if(!f.canRead()) throw new IllegalArgumentException("File [" + fileName + "] is not readable");
+		StringBuilder b = new StringBuilder();
+		InputStreamReader isr = null;
+		BufferedReader br = null;
+		FileInputStream is = null;		
+		try {
+			is = new FileInputStream(f);
+			isr = new InputStreamReader(is, Charset.forName("UTF8"));
+			br = new BufferedReader(isr);
+			String line = null;
+			while((line=br.readLine())!=null) {
+				b.append(line).append("\n");
+			}
+			return b.toString();			
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to read file [" + fileName + "]", e);
+		} finally {
+			if(br!=null) try { br.close(); } catch (Exception e) {/* No Op */}
+			if(isr!=null) try { isr.close(); } catch (Exception e) {/* No Op */}
+			if(is!=null) try { is.close(); } catch (Exception e) {/* No Op */}
+		}
+		
+	}
 	
 	
 	public Object execute(final MBeanServerConnection conn, final String... args) throws Exception {
