@@ -1,138 +1,245 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.heliosapm.jmxlocal</groupId>
-	<artifactId>jmxlocal</artifactId>
-	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
-	<name>JMXLocal</name>
-	<properties>
-  	<!-- Misc -->
- 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
- 		<compiler-source.version>1.6</compiler-source.version>
- 		<compiler-target.version>1.6</compiler-target.version>
- 		<!-- Dependencies -->
- 		<junit.version>4.12</junit.version>		
- 		<args4j.version>2.0.29</args4j.version>
-		<!-- Plugin Versions -->
-		<jar-plugin.version>2.3</jar-plugin.version>
-		<source-plugin.version>2.2</source-plugin.version>
-		<javadoc-plugin.version>2.9</javadoc-plugin.version>
-		<jar-plugin.version>2.4</jar-plugin.version>
-		<eclipse-plugin.version>2.9</eclipse-plugin.version>
-		<surefire.version>2.16</surefire.version>
-		<shade.version>2.1</shade.version>
-	</properties>
-	
-	
-	<dependencies>
-	
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.heliosapm.jmxlocal</groupId>
+    <artifactId>jmxlocal</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>JMXLocal</name>
+    <properties>
+        <!-- Misc -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <compiler-source.version>1.6</compiler-source.version>
+        <compiler-target.version>1.6</compiler-target.version>
+        <!-- Dependencies -->
+        <junit.version>4.12</junit.version>
+        <args4j.version>2.0.29</args4j.version>
+        <!-- Plugin Versions -->
+        <jar-plugin.version>2.3</jar-plugin.version>
+        <source-plugin.version>2.2</source-plugin.version>
+        <javadoc-plugin.version>2.9</javadoc-plugin.version>
+        <jar-plugin.version>2.4</jar-plugin.version>
+        <eclipse-plugin.version>2.9</eclipse-plugin.version>
+        <surefire.version>2.16</surefire.version>
+        <shade.version>2.1</shade.version>
+    </properties>
 
-		<!--   TEST   -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-  
-    <dependency>
-      <groupId>args4j</groupId>
-      <artifactId>args4j</artifactId>
-      <version>${args4j.version}</version>
-    </dependency>
-		
-			
-	</dependencies>
-	<build>
-		<defaultGoal>install</defaultGoal>
-		<plugins>
+    <url>https://github.com/nickman/jmxlocal</url>
 
-		    <plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-eclipse-plugin</artifactId>
-			<version>${eclipse-plugin.version}</version>
-			<configuration>
-			    <downloadJavadocs>true</downloadJavadocs>
-			    <downloadSources>true</downloadSources>
-			</configuration>
-		    </plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>${compiler-source.version}</source>
-					<target>${compiler-target.version}</target>
-				</configuration>
-			</plugin>
-       	<plugin>
-		  <groupId>org.apache.maven.plugins</groupId>
-		  <artifactId>maven-jar-plugin</artifactId>
-		  <version>${jar-plugin.version}</version>		
-		  <configuration>
-		      <archive>
-			  <manifest>
-			      <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-			      <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-			      <addClasspath>true</addClasspath>
-			  </manifest>
-			  <manifestEntries>
-			  	<Main-Class>com.heliosapm.utils.jmx.Command</Main-Class>
-			  		<!--
-				    		<Main-Class>org.helios.apmrouter.Agent</Main-Class> 
-				    		<Premain-Class>org.helios.apmrouter.Agent</Premain-Class>
-			            	<Agent-Class>org.helios.apmrouter.Agent</Agent-Class>
-			            	<Can-Redefine-Classes>true</Can-Redefine-Classes>
-			            	<Can-Retransform-Classes>true</Can-Retransform-Classes>
-			            	<Can-Set-Native-Method-Prefix>true</Can-Set-Native-Method-Prefix>				    
-			        -->
-			  </manifestEntries>
-		      </archive>
-		  </configuration>
-            	</plugin>
-            	
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-shade-plugin</artifactId>
-              <version>${shade.version}</version>
-              <executions>
-                  <execution>
-                    <phase>package</phase>
-                    <goals>
-                      <goal>shade</goal>
-                    </goals>
-                    <configuration>
-                      
-                      <artifactSet>
-                        <excludes>
-		                      <exclude>META-INF/*.SF</exclude>
-		                      <exclude>META-INF/*.DSA</exclude>
-		                      <exclude>META-INF/*.RSA</exclude>                       
-                        </excludes>
-                        <includes>
-                          
-                        </includes>
-                      </artifactSet>
-                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                    <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                    <includePluginDependencies>false</includePluginDependencies>
-                    
-                  <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"></transformer>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
-                          <resource>.SF</resource>
-                          <resource>.DSA</resource>
-                          <resource>.RSA</resource>
-                      </transformer>
-                      </transformers>
-                    </configuration>
-                    
-                  </execution>
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:nickman/jmxlocal.git</connection>
+        <developerConnection>scm:git:git@github.com:nickman/jmxlocal.git</developerConnection>
+        <url>scm:git:git@github.com:nickman/jmxlocal.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>nickman</name>
+            <roles>
+                <role>creator</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <dependencies>
+
+
+        <!--   TEST   -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>args4j</groupId>
+            <artifactId>args4j</artifactId>
+            <version>${args4j.version}</version>
+        </dependency>
+
+
+    </dependencies>
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>${eclipse-plugin.version}</version>
+                <configuration>
+                    <downloadJavadocs>true</downloadJavadocs>
+                    <downloadSources>true</downloadSources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>${compiler-source.version}</source>
+                    <target>${compiler-target.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${jar-plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <Main-Class>com.heliosapm.utils.jmx.Command</Main-Class>
+                            <!--
+                                  <Main-Class>org.helios.apmrouter.Agent</Main-Class>
+                                  <Premain-Class>org.helios.apmrouter.Agent</Premain-Class>
+                                  <Agent-Class>org.helios.apmrouter.Agent</Agent-Class>
+                                  <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                                  <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                                  <Can-Set-Native-Method-Prefix>true</Can-Set-Native-Method-Prefix>
+                          -->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${shade.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>META-INF/*.SF</exclude>
+                                    <exclude>META-INF/*.DSA</exclude>
+                                    <exclude>META-INF/*.RSA</exclude>
+                                </excludes>
+                                <includes>
+
+                                </includes>
+                            </artifactSet>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <includePluginDependencies>false</includePluginDependencies>
+
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"></transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                                    <resource>.SF</resource>
+                                    <resource>.DSA</resource>
+                                    <resource>.RSA</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+
+                    </execution>
                 </executions>
-            </plugin>     
-            				
-		</plugins>
-	</build>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.3</version>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
