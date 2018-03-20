@@ -4,7 +4,7 @@
     <groupId>com.heliosapm.jmxlocal</groupId>
     <artifactId>jmxlocal</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>JMXLocal</name>
     <description>A set of JMXConnector implementations to provide standard remoting connectivity to in VM MBeanServers and local JVMs</description>
     <inceptionYear>2016</inceptionYear>
@@ -42,6 +42,7 @@
         <connection>scm:git:git@github.com:nickman/jmxlocal.git</connection>
         <developerConnection>scm:git:git@github.com:nickman/jmxlocal.git</developerConnection>
         <url>scm:git:git@github.com:nickman/jmxlocal.git</url>
+    <tag>jmxlocal-1.0</tag>
   </scm>
 
     <developers>
