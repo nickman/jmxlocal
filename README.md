@@ -14,3 +14,12 @@ Sometimes, you want to be able to reference an MBeanServer using a standard JMXS
 * Connect to a different in-vm MBeanServer using the domain:  **service:jmx:local:///jboss**
 * Connect to a local JVM by pid: **service:jmx:attach:///23474**
 * Connect to a local JVM by display name regex: **service:jmx:attach:///[GroovyStarter.*]**
+
+## Maven
+```XML
+<dependency>
+  <groupId>com.heliosapm.jmxlocal</groupId>
+  <artifactId>jmxlocal</artifactId>
+  <version>1.0</version>
+</dependency>
+```
