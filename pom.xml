@@ -4,7 +4,7 @@
     <groupId>com.heliosapm.jmxlocal</groupId>
     <artifactId>jmxlocal</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>JMXLocal</name>
     <properties>
         <!-- Misc -->
@@ -39,7 +39,8 @@
         <connection>scm:git:git@github.com:nickman/jmxlocal.git</connection>
         <developerConnection>scm:git:git@github.com:nickman/jmxlocal.git</developerConnection>
         <url>scm:git:git@github.com:nickman/jmxlocal.git</url>
-    </scm>
+      <tag>jmxlocal-1.0</tag>
+  </scm>
 
     <developers>
         <developer>
@@ -156,7 +157,7 @@
                             <includePluginDependencies>false</includePluginDependencies>
 
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"></transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
                                     <resource>.SF</resource>
                                     <resource>.DSA</resource>
