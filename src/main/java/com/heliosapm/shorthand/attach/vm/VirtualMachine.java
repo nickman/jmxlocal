@@ -58,6 +58,10 @@ public class VirtualMachine extends BaseWrappedClass {
 	public static final String JMX_AGENT = "management-agent.jar";
 	/** The system property representing the java home */
 	public static final String JAVA_HOME = "java.home";
+	/** Indicates if JVM is version 9+ */
+	public static final boolean JAVA_9_PLUS = isJava9Plus();
+	
+	
 	
 	/**
 	 * Retrieves the VirtualMachine wrapper class for the passed VirtualMachine delegate 
@@ -93,6 +97,9 @@ public class VirtualMachine extends BaseWrappedClass {
 	 */
 	VirtualMachine(Object delegate) {
 		super(delegate);
+		if(JAVA_9_PLUS) {
+			invoke(delegate, VirtualMachineBootstrap.VM_CLASS, "startLocalManagementAgent");
+		}
 	}
 	
 	/**
@@ -381,6 +388,16 @@ public class VirtualMachine extends BaseWrappedClass {
 			}
 		}
 		return jmxServiceURL;
+	}
+	
+	
+	private static boolean isJava9Plus() {
+		try {
+			Class.forName("java.lang.ProcessHandle");
+			return true;
+		} catch (Throwable t) {
+			return false;
+		}
 	}
 
 }
